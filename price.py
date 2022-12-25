@@ -13,7 +13,7 @@ prices_tariff1 = {
     300: 5,
     890: 6}
 
-
+#
 def price(id):
     balance = prices_tariff[id]
     list_price = [300, 400, 450, 500, 700, 890]

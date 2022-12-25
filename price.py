@@ -20,15 +20,15 @@ def price(id):
     if id == 6:
         return False
     return prices_tariff1[list_price[list_price.index(balance) + 1]]
-
-
-i = [0, 95]
-minutes = min_price = abs(i[1])
-min_price = (lambda x: x - 1 if x % 10 == 5 else x)(min_price)
-min_price = (lambda x: x + 1 if x % 10 == 9 else x)(min_price)
-min_price = ((lambda x: 1 if min_price // 50 > 0 else 0)(i) * min_price - 40) + 40
-min_price -= min_price // 10 * 2
-print(minutes, min_price)
+#
+#
+# i = [0, 95]
+# minutes = min_price = abs(i[1])
+# min_price = (lambda x: x - 1 if x % 10 == 5 else x)(min_price)
+# min_price = (lambda x: x + 1 if x % 10 == 9 else x)(min_price)
+# min_price = ((lambda x: 1 if min_price // 50 > 0 else 0)(i) * min_price - 40) + 40
+# min_price -= min_price // 10 * 2
+# print(minutes, min_price)
 
 # 55 - 44
 # 60 - 48

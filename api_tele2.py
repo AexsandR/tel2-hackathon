@@ -60,46 +60,42 @@ class Api_tele2(Resource):
                 ...
             else:
                 i[0] -= statistic_user.internet
-            balance = False
+            balance = prices_tariff[i[2]]
             if i[0] < 0:
                 gb_plus = abs(i[0]) * 15
-                if price(i[2]):
-                    if i[2] != 1 and gb_plus < prices_tariff[price(i[2])] - prices_tariff[i[2]]:
-                        i[0] = 0
-                        i.append(gb_plus // 15)
-                        balance = prices_tariff[price(i[2])] - prices_tariff[i[2]] - gb_plus
-                    elif i[2] == 1:
-                        i[0] = 0
-                        i.append(gb_plus // 15)
+                balance += gb_plus
+                if i[2] != 1:
+                    i[0] = 0
+                    i.append(gb_plus // 15)
+                elif i[2] == 1:
+                    i[0] = 0
+                    i.append(gb_plus // 15)
+
+
             else:
                 i.append(0)
             if i[1] < 0:
-                if price(i[2]):
-                    minutes = min_price = abs(i[1])
-                    min_price = (lambda x: x - 1 if x % 10 == 5 else x)(min_price)
-                    min_price = (lambda x: x + 1 if x % 10 == 9 else x)(min_price)
-                    min_price = ((lambda x: 1 if min_price // 50 > 0 else 0)(i) * min_price - 40) + 40
-                    min_price -= min_price // 10 * 2
-                    if balance is False and balance != 0 and i[2] != 1:
-                        if min_price < prices_tariff[price(i[2])] - prices_tariff[i[2]]:
-                            i.append(minutes)
-                            i[1] = 0
-                    elif i[2] == 1:
-                        i[1] = 0
-                        i.append(minutes)
-                    elif balance:
-                        if balance >= min_price:
-                            i[1] = 0
-                            i.append(minutes)
+
+                minutes = min_price = abs(i[1])
+                min_price = (lambda x: x - 1 if x % 10 == 5 else x)(min_price)
+                min_price = (lambda x: x + 1 if x % 10 == 9 else x)(min_price)
+                min_price = ((lambda x: 1 if min_price // 50 > 0 else 0)(i) * min_price - 40) + 40
+                min_price -= min_price // 10 * 2
+                balance += min_price
+                if i[2] != 1:
+                    i.append(minutes)
+                    i[1] = 0
+                elif i[2] == 1:
+                    i[1] = 0
+                    i.append(minutes)
+
+
 
             else:
                 i.append(0)
+            i.append(balance)
         print(res)
-        res = list(filter(lambda x: x[0] >= 0 and x[1] >= 0 and len(x) > 3, res))
-        print(res)
-        res = sorted(res, key=lambda x: x[0] and x[1] and x[3] and x[4])[0]
-        print(res)
-
+        res = min(res, key=lambda x: x[-1])
         tariff = db_sess.query(Tariffs).filter(Tariffs.id == res[2]).first()
         tariff_name = tariff.tariff
 
@@ -108,5 +104,5 @@ class Api_tele2(Resource):
                         'tariff': tariff_name,
                         'minutes': statistic_user.minutes,
                         'gigabyte': spent,
-                        'buy_gb': res[-2],
-                        'buy_min': res[-1]})
+                        'buy_gb': res[-3],
+                        'buy_min': res[-2]})

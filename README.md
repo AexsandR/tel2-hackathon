@@ -1,2 +1,2 @@
-# tel2-hackathon
+# tele2-hackathon
 здесь наш проект
